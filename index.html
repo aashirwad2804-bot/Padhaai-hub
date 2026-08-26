@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Padhaai Hub - All Exams</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      padding: 22px 15px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 15px;
+    }
+
+    .welcome {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #666;
+    }
+
+    .exam-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .exam-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: 0.25s;
+      border: 2px solid transparent;
+    }
+
+    .exam-card:hover {
+      transform: translateY(-5px);
+      border-color: #2563eb;
+    }
+
+    .exam-icon {
+      font-size: 45px;
+      margin-bottom: 12px;
+    }
+
+    .exam-card h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .exam-card p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #subjectsPage,
+    #quizPage {
+      display: none;
+    }
+
+    .back {
+      background: #555;
+      margin-bottom: 20px;
+    }
+
+    .back:hover {
+      background: #333;
+    }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .subject-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .subject-card:hover {
+      background: #eff6ff;
+      transform: translateY(-3px);
+    }
+
+    .subject-card h3 {
+      margin-bottom: 5px;
+    }
+
+    .subject-card p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .quiz-box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .question-number {
+      color: #2563eb;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .question {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #f1f5f9;
+      color: #222;
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+    }
+
+    .option:hover {
+      background: #dbeafe;
+      border-color: #2563eb;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 22px;
+      padding: 20px;
+    }
+
+    .result h2 {
+      margin-bottom: 10px;
+    }
+
+    .result p {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+      margin-top: 30px;
+    }
+
+    @media(max-width:600px) {
+
+      header h1 {
+        font-size: 25px;
+      }
+
+      .question {
+        font-size: 18px;
+      }
+
+      .container {
+        padding: 20px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>📚 Padhaai Hub</h1>
+  <p>Learn • Practice • Improve</p>
+</header>
+
+
+<!-- ================= HOME PAGE ================= -->
+
+<div id="homePage" class="container">
+
+  <div class="welcome">
+    <h2>Choose Your Exam</h2>
+    <p>Practice questions and improve your preparation.</p>
+  </div>
+
+  <div class="exam-grid">
+
+    <div class="exam-card" onclick="showSubjects('NEET')">
+      <div class="exam-icon">🧬</div>
+      <h3>NEET</h3>
+      <p>Physics • Chemistry • Biology</p>
+    </div>
+
+    <div class="exam-card" onclick="showSubjects('JEE')">
+      <div class="exam-icon">⚛️</div>
+      <h3>JEE</h3>
+      <p>Physics • Chemistry • Mathematics</p>
+    </div>
+
+    <div class="exam-card" onclick="showSubjects('SSC')">
+      <div class="exam-icon">📝</div>
+      <h3>SSC</h3>
+      <p>Reasoning • Maths • English • GK</p>
+    </div>
+
+    <div class="exam-card" onclick="showSubjects('Banking')">
+      <div class="exam-icon">🏦</div>
+      <h3>Banking</h3>
+      <p>Reasoning • Quant • English • GA</p>
+    </div>
+
+    <div class="exam-card" onclick="showSubjects('Railway')">
+      <div class="exam-icon">🚆</div>
+      <h3>Railway</h3>
+      <p>Maths • Reasoning • Science • GA</p>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SUBJECT PAGE ================= -->
+
+<div id="subjectsPage" class="container">
+
+  <button class="back" onclick="goHome()">← Back</button>
+
+  <div class="welcome">
+    <h2 id="examTitle">Subjects</h2>
+    <p>Select a subject to start your quiz.</p>
+  </div>
+
+  <div id="subjectGrid" class="subject-grid"></div>
+
+</div>
+
+
+<!-- ================= QUIZ PAGE ================= -->
+
+<div id="quizPage" class="container">
+
+  <button class="back" onclick="goSubjects()">← Back</button>
+
+  <div class="quiz-box">
+
+    <div id="questionNumber" class="question-number"></div>
+
+    <div id="questionText" class="question"></div>
+
+    <div id="options"></div>
+
+    <div id="result"></div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  © 2026 Padhaai Hub | Education Platform
+</footer>
+
+
+<script>
+
+  /* ================= VARIABLES ================= */
+
+  let currentExam = "";
+  let currentSubject = "";
+  let questions = [];
+  let currentQuestion = 0;
+  let score = 0;
+
+
+  /* ================= SUBJECTS ================= */
+
+  const subjects = {
+
+    NEET: [
+      "Physics",
+      "Chemistry",
+      "Biology"
+    ],
+
+    JEE: [
+      "Physics",
+      "Chemistry",
+      "Mathematics"
+    ],
+
+    SSC: [
+      "Reasoning",
+      "Quantitative Aptitude",
+      "English",
+      "General Awareness"
+    ],
+
+    Banking: [
+      "Reasoning",
+      "Quantitative Aptitude",
+      "English",
+      "General Awareness"
+    ],
+
+    Railway: [
+      "Mathematics",
+      "Reasoning",
+      "General Science",
+      "General Awareness"
+    ]
+
+  };
+
+
+  /* ================= SHOW SUBJECTS ================= */
+
+  function showSubjects(exam) {
+
+    currentExam = exam;
+
+    document.getElementById("homePage").style.display = "none";
+
+    document.getElementById("quizPage").style.display = "none";
+
+    document.getElementById("subjectsPage").style.display = "block";
+
+    document.getElementById("examTitle").innerText =
+      exam + " Subjects";
+
+    const grid =
+      document.getElementById("subjectGrid");
+
+    grid.innerHTML = "";
+
+    subjects[exam].forEach(subject => {
+
+      const card =
+        document.createElement("div");
+
+      card.className = "subject-card";
+
+      card.innerHTML = `
+        <h3>${subject}</h3>
+        <p>Practice Questions</p>
+      `;
+
+      card.onclick = function() {
+        startQuiz(subject);
+      };
+
+      grid.appendChild(card);
+
+    });
+
+  }
+
+
+  /* ================= GO HOME ================= */
+
+  function goHome() {
+
+    document.getElementById("homePage").style.display =
+      "block";
+
+    document.getElementById("subjectsPage").style.display =
+      "none";
+
+    document.getElementById("quizPage").style.display =
+      "none";
+
+  }
+
+
+  /* ================= GO SUBJECTS ================= */
+
+  function goSubjects() {
+
+    document.getElementById("homePage").style.display =
+      "none";
+
+    document.getElementById("quizPage").style.display =
+      "none";
+
+    document.getElementById("subjectsPage").style.display =
+      "block";
+
+  }
+
+
+  /* ================= START QUIZ ================= */
+
+  function startQuiz(subject) {
+
+    currentSubject = subject;
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    questions =
+      getQuestions(currentExam, subject);
+
+    if (questions.length === 0) {
+
+      alert(
+        "No questions found for " +
+        currentExam +
+        " - " +
+        subject
+      );
+
+      return;
+
+    }
+
+    document.getElementById("subjectsPage").style.display =
+      "none";
+
+    document.getElementById("quizPage").style.display =
+      "block";
+
+    document.getElementById("result").innerHTML = "";
+
+    showQuestion();
+
+  }
+
+
+  /* ================= QUESTION BANK ================= */
+
+  function getQuestions(exam, subject) {
+
+    const questionData = {
+
+
+      /* ---------- NEET ---------- */
+
+      "NEET-Physics": [
+
+        {
+          question: "What is the SI unit of force?",
+
+          options: [
+            "Joule",
+            "Newton",
+            "Watt",
+            "Pascal"
+          ],
+
+          answer: 1
+        },
+
+        {
+          question: "Which quantity is a vector?",
+
+          options: [
+            "Mass",
+            "Time",
+            "Velocity",
+            "Temperature"
+          ],
+
+          answer: 2
+        }
+
+      ],
+
+
+      "NEET-Chemistry": [
+
+        {
+          question: "What is the atomic number of Carbon?",
+
+          options: [
+            "4",
+            "6",
+            "8",
+            "12"
+          ],
+
+          answer: 1
+        }
+
+      ],
+
+
+      "NEET-Biology": [
+
+        {
+          question: "The powerhouse of the cell is:",
+
+          options: [
+            "Nucleus",
+            "Ribosome",
+            "Mitochondria",
+            "Golgi body"
+          ],
+
+          answer: 2
+        }
+
+      ],
+
+
+      /* ---------- JEE ---------- */
+
+      "JEE-Physics": [
+
+        {
+          question: "The dimensional formula of force is:",
+
+          options: [
+            "MLT⁻²",
+            "ML²T⁻²",
+            "ML⁻¹T⁻²",
+            "M⁰LT⁻¹"
+          ],
+
+          answer: 0
+        }
+
+      ],
+
+
+      "JEE-Chemistry": [
+
+        {
+          question:
+            "The pH of a neutral solution at 25°C is:",
+
+          options: [
+            "0",
+            "5",
+            "7",
+            "14"
+          ],
+
+          answer: 2
+        }
+
+      ],
+
+
+      "JEE-Mathematics": [
+
+        {
+          question:
+            "What is the derivative of x²?",
+
+          options: [
+            "x",
+            "2x",
+            "x²",
+            "2"
+          ],
+
+          answer: 1
+        }
+
+      ],
+
+
+      /* ---------- SSC ---------- */
+
+      "SSC-Reasoning": [
+
+        {
+          question:
+            "Find the next number: 2, 4, 6, 8, ?",
+
+          options: [
+            "9",
+            "10",
+            "12",
+            "14"
+          ],
+
+          answer: 1
+        }
+
+      ],
+
+
+      "SSC-Quantitative Aptitude": [
+
+        {
+          question:
+            "What is 20% of 200?",
+
+          options: [
+            "20",
+            "30",
+            "40",
+            "50"
+          ],
+
+          answer: 2
+        }
+
+      ],
+
+
+      "SSC-English": [
+
+        {
+          question:
+            "Choose the synonym of 'Happy'.",
+
+          options: [
+            "Sad",
+            "Joyful",
+            "Angry",
+            "Weak"
+          ],
+
+          answer: 1
+        }
+
+      ],
+
+
+      "SSC-General Awareness": [
+
+        {
+          question:
+            "What is the capital of India?",
+
+          options: [
+            "Mumbai",
+            "New Delhi",
+            "Kolkata",
+            "Chennai"
+          ],
+
+          answer: 1
+        }
+
+      ]
+
+    };
+
+
+    return questionData[exam + "-" + subject] || [];
+
+  }
+
+
+  /* ================= SHOW QUESTION ================= */
+
+  function showQuestion() {
+
+    const q =
+      questions[currentQuestion];
+
+    document.getElementById("questionNumber").innerText =
+      "Question " +
+      (currentQuestion + 1) +
+      " of " +
+      questions.length;
+
+    document.getElementById("questionText").innerText =
+      q.question;
+
+    const optionsDiv =
+      document.getElementById("options");
+
+    optionsDiv.innerHTML = "";
+
+    q.options.forEach((option, index) => {
+
+      const button =
+        document.createElement("button");
+
+      button.className = "option";
+
+      button.innerText =
+        String.fromCharCode(65 + index) +
+        ". " +
+        option;
+
+      button.onclick = function() {
+
+        selectAnswer(index);
+
+      };
+
+      optionsDiv.appendChild(button);
+
+    });
+
+  }
+
+
+  /* ================= SELECT ANSWER ================= */
+
+  function selectAnswer(selected) {
+
+    const correct =
+      questions[currentQuestion].answer;
+
+    if (selected === correct) {
+
+      score++;
+
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+      showQuestion();
+
+    } else {
+
+      showResult();
+
+    }
+
+  }
+
+
+  /* ================= RESULT ================= */
+
+  function showResult() {
+
+    document.getElementById("questionNumber").innerText =
+      "Quiz Completed 🎉";
+
+    document.getElementById("questionText").innerText =
+      "";
+
+    document.getElementById("options").innerHTML =
+      "";
+
+    document.getElementById("result").innerHTML = `
+
+      <div class="result">
+
+        <h2>Your Score</h2>
+
+        <p>
+          ${score} / ${questions.length}
+        </p>
+
+        <button onclick="startQuiz(currentSubject)">
+          🔄 Restart Quiz
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+</script>
+
+</body>
+</html>
