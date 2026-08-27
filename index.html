@@ -494,64 +494,52 @@ async function showSubjects(exam) {
 /* =====================================================
    START QUIZ
    ===================================================== */
-
 async function startQuiz(subject) {
 
   currentSubject = subject;
   currentQuestionIndex = 0;
   score = 0;
 
-  document.getElementById("subjectsPage").style.display =
-    "none";
+  document.getElementById("subjectsPage").style.display = "none";
+  document.getElementById("quizPage").style.display = "block";
 
-  document.getElementById("quizPage").style.display =
-    "block";
-
-  document.getElementById("questionNumber").innerText =
-    "Loading...";
-
-  document.getElementById("questionText").innerText =
-    "";
-
+  document.getElementById("questionNumber").innerText = "Loading...";
+  document.getElementById("questionText").innerText = "";
   document.getElementById("options").innerHTML =
     "<div class='loading'>Loading questions...</div>";
-
-  document.getElementById("quizResult").innerHTML =
-    "";
-
+  document.getElementById("quizResult").innerHTML = "";
 
   try {
 
-    /*
-      Important:
-      Your questions table uses:
-
-      exam    -> exams.id
-      subjects -> subjects.id
-    */
-
+    // Get ALL questions.
+    // We filter them in JavaScript so capitalization of
+    // Exam / Subjects cannot cause another Supabase error.
     const questions = await supabaseFetch(
-      "questions?select=id,exam,subjects,question,option_a,option_b,option_c,option_d,correct_answer,explanation" +
-      "&exam=eq." + encodeURIComponent(currentExam.id) +
-      "&subjects=eq." + encodeURIComponent(subject.id) +
-      "&order=id.asc"
+      "questions?select=*&order=id.asc"
     );
 
-    currentQuestions = questions;
+    currentQuestions = questions.filter(q => {
 
-    if (!questions.length) {
+      const examId = q.Exam ?? q.exam ?? q.exam_id;
+      const subjectId = q.Subjects ?? q.subjects ?? q.subject_id;
 
-      document.getElementById("questionNumber").innerText =
-        "";
+      return String(examId) === String(currentExam.id) &&
+             String(subjectId) === String(subject.id);
+
+    });
+
+    if (!currentQuestions.length) {
+
+      document.getElementById("questionNumber").innerText = "";
 
       document.getElementById("questionText").innerText =
         "No questions available yet.";
 
       document.getElementById("options").innerHTML = `
         <div class="loading">
-          No questions have been added for
+          No questions found for
           ${escapeHTML(currentExam.name)}
-          → ${escapeHTML(subject.name)} yet.
+          → ${escapeHTML(subject.name)}
         </div>
       `;
 
@@ -564,8 +552,7 @@ async function startQuiz(subject) {
 
     console.error(error);
 
-    document.getElementById("questionNumber").innerText =
-      "Error";
+    document.getElementById("questionNumber").innerText = "Error";
 
     document.getElementById("options").innerHTML = `
       <div class="error">
@@ -575,18 +562,15 @@ async function startQuiz(subject) {
     `;
 
   }
-
 }
 
 
 /* =====================================================
    SHOW QUESTION
    ===================================================== */
-
 function showQuestion() {
 
-  const q =
-    currentQuestions[currentQuestionIndex];
+  const q = currentQuestions[currentQuestionIndex];
 
   document.getElementById("questionNumber").innerText =
     "Question " +
@@ -595,42 +579,34 @@ function showQuestion() {
     currentQuestions.length;
 
   document.getElementById("questionText").innerText =
-    q.question;
+    q.question ?? q.Question ?? "";
 
-  const optionsDiv =
-    document.getElementById("options");
+  const optionsDiv = document.getElementById("options");
 
   optionsDiv.innerHTML = "";
 
   const options = [
-
     {
       letter: "A",
-      text: q.option_a
+      text: q.option_a ?? q.Option_A ?? ""
     },
-
     {
       letter: "B",
-      text: q.option_b
+      text: q.option_b ?? q.Option_B ?? ""
     },
-
     {
       letter: "C",
-      text: q.option_c
+      text: q.option_c ?? q.Option_C ?? ""
     },
-
     {
       letter: "D",
-      text: q.option_d
+      text: q.option_d ?? q.Option_D ?? ""
     }
-
   ];
 
+  options.forEach(option => {
 
-  options.forEach((option) => {
-
-    const button =
-      document.createElement("button");
+    const button = document.createElement("button");
 
     button.className = "option";
 
@@ -638,17 +614,13 @@ function showQuestion() {
       option.letter + ". " + option.text;
 
     button.onclick = function() {
-
       selectAnswer(option.letter);
-
     };
 
     optionsDiv.appendChild(button);
 
   });
-
 }
-
 
 /* =====================================================
    CHECK ANSWER
